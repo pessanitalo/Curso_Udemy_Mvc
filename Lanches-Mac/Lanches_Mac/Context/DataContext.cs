@@ -8,5 +8,6 @@ namespace Lanches_Mac.Context
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Categoria> Categorias  { get; set; }
         public DbSet<Lanche> Lanches { get; set; }
+        public DbSet<CarrinhoItem> CarrinhoItens { get; set; }
     }
 }

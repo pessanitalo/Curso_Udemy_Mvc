@@ -1,5 +1,6 @@
 using Lanches_Mac.Context;
 using Lanches_Mac.Interface;
+using Lanches_Mac.Models;
 using Lanches_Mac.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,12 @@ namespace Lanches_Mac
 
             builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             builder.Services.AddScoped<ILancheRepository, LancheRepository>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            //builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
+            builder.Services.AddScoped(CarrinhoCompra.GetCarrinho);
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
 
             var app = builder.Build();
   
@@ -34,7 +41,8 @@ namespace Lanches_Mac
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
+            
             app.UseAuthorization();
 
             app.MapControllerRoute(

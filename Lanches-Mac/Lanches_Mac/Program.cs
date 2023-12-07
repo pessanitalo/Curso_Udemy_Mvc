@@ -20,15 +20,16 @@ namespace Lanches_Mac
 
             builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             builder.Services.AddScoped<ILancheRepository, LancheRepository>();
+            builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            //builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
-            builder.Services.AddScoped(CarrinhoCompra.GetCarrinho);
+            builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
+            //builder.Services.AddScoped(CarrinhoCompra.GetCarrinho);
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession();
 
             var app = builder.Build();
-  
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -36,14 +37,19 @@ namespace Lanches_Mac
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-      
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
             app.UseSession();
-            
+
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "categoriaFiltro",
+                pattern: "Lanche/{action}/{categoria?}",
+                defaults: new { controller = "Lanche", Action = "List" });
 
             app.MapControllerRoute(
                 name: "default",

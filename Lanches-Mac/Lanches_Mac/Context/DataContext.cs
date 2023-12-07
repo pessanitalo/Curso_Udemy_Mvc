@@ -9,5 +9,7 @@ namespace Lanches_Mac.Context
         public DbSet<Categoria> Categorias  { get; set; }
         public DbSet<Lanche> Lanches { get; set; }
         public DbSet<CarrinhoItem> CarrinhoItens { get; set; }
+        public DbSet<Pedido> Pedidos { get; set; }
+        public DbSet<PedidoDetalhe> PedidoDetalhes { get; set; }
     }
 }

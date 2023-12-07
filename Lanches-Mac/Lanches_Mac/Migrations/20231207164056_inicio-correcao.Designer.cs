@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lanches_Mac.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231206181211_pedidoDetalhes")]
-    partial class pedidoDetalhes
+    [Migration("20231207164056_inicio-correcao")]
+    partial class iniciocorrecao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,8 +147,8 @@ namespace Lanches_Mac.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<decimal>("PedidoEntregue")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<DateTime>("PedidoEntregue")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("PedidoEnviado")
                         .HasColumnType("datetime2");

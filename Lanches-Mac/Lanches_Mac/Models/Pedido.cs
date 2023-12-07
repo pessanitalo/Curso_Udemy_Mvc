@@ -53,7 +53,7 @@ namespace Lanches_Mac.Models
 
         [DataType(DataType.Text)]
         [DisplayFormat(DataFormatString = "{0: dd/MM/yyyy hh:mm}", ApplyFormatInEditMode = true)]
-        public decimal PedidoEntregue { get; set; }
+        public DateTime PedidoEntregue { get; set; }
 
 
         public List<PedidoDetalhe> PedidoItens { get; set; }

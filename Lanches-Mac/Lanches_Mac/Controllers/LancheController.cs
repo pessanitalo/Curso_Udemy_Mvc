@@ -1,4 +1,5 @@
 ﻿using Lanches_Mac.Interface;
+using Lanches_Mac.Models;
 using Lanches_Mac.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,18 +14,76 @@ namespace Lanches_Mac.Controllers
             _repository = context;
         }
 
-        public IActionResult List()
+        public IActionResult List(string categoria)
         {
-            //var lanches = _repository.ObterLanches();
-            var lanchesListaViewModel = new LancheListaViewModels();
-            lanchesListaViewModel.Lanches = _repository.ObterLanches();
-            lanchesListaViewModel.CategoriaAtual = "Fit";
-            return View(lanchesListaViewModel);
+
+            IEnumerable<Lanche> lanches;
+            string categoriaAtual = string.Empty;
+
+            if (string.IsNullOrEmpty(categoria))
+            {
+                lanches = _repository.ObterLanches();
+                categoriaAtual = "Todos os Lanches";
+            }
+            {
+
+                lanches = _repository.ObterLanches().Where(c => c.Categoria.Nome.Equals(categoria));
+                categoriaAtual = categoria;
+            }
+
+            var lanchesListViewModel = new LancheListaViewModels
+            {
+                Lanches = lanches,
+                CategoriaAtual = categoriaAtual
+            };
+
+            return View(lanchesListViewModel);
         }
 
         public IActionResult Create()
         {
             return View();
+        }
+
+        public IActionResult Details(int id)
+        {
+            var lanche = _repository.ObterLanchePorId(id);
+            return View(lanche);
+        }
+       
+        public IActionResult Search(string busca)
+        {
+            IEnumerable<Lanche> lanches;
+            string categoriaAtual = string.Empty;
+
+            if (string.IsNullOrEmpty(busca))
+            {
+                lanches = _repository.ObterLanches();
+                categoriaAtual = "Todos os Lanches";
+            }
+
+            else
+            {
+
+                lanches = _repository.ObterLanches().Where(c => c.Nome.ToLower().Contains(busca.ToLower()));
+
+                if (lanches.Any())
+                {
+                    categoriaAtual = "Lanches";
+                }
+
+                else
+                {
+                    categoriaAtual = "Nenhum Lanche foi encontrado";
+                }             
+
+            }
+
+            return View("~/Views/Lanche/List.cshtml", new LancheListaViewModels
+            {
+                Lanches = lanches,
+                CategoriaAtual = categoriaAtual
+            });
         }
     }
 }

@@ -2,6 +2,7 @@ using Lanches_Mac.Context;
 using Lanches_Mac.Interface;
 using Lanches_Mac.Models;
 using Lanches_Mac.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lanches_Mac
@@ -17,6 +18,10 @@ namespace Lanches_Mac
 
             builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+                            .AddEntityFrameworkStores<DataContext>()
+                            .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             builder.Services.AddScoped<ILancheRepository, LancheRepository>();
@@ -45,6 +50,7 @@ namespace Lanches_Mac
             app.UseSession();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "categoriaFiltro",

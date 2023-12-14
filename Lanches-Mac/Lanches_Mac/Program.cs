@@ -4,6 +4,7 @@ using Lanches_Mac.Models;
 using Lanches_Mac.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace Lanches_Mac
 {
@@ -33,6 +34,12 @@ namespace Lanches_Mac
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession();
 
+            builder.Services.AddPaging(opt =>
+            {
+                opt.ViewName = "Bootstrap5";
+                opt.PageParameterName = "pageindex";
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -53,13 +60,8 @@ namespace Lanches_Mac
             app.UseAuthentication();
 
             app.MapControllerRoute(
-                name: "categoriaFiltro",
-                pattern: "Lanche/{action}/{categoria?}",
-                defaults: new { controller = "Lanche", Action = "List" });
-
-            app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}");
 
             app.Run();
         }

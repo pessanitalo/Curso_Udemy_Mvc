@@ -2,9 +2,11 @@
 using Lanches_Mac.Models;
 using Lanches_Mac.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using ReflectionIT.Mvc.Paging;
 
 namespace Lanches_Mac.Controllers
 {
+
     public class LancheController : Controller
     {
         private readonly ILancheRepository _repository;
@@ -14,30 +16,17 @@ namespace Lanches_Mac.Controllers
             _repository = context;
         }
 
-        public IActionResult List(string categoria)
+
+        public IActionResult Index(string filter, int pageindex = 1)
         {
 
             IEnumerable<Lanche> lanches;
-            string categoriaAtual = string.Empty;
 
-            if (string.IsNullOrEmpty(categoria))
-            {
-                lanches = _repository.ObterLanches();
-                categoriaAtual = "Todos os Lanches";
-            }
-            {
+            lanches = _repository.ObterLanches();
+            var model = PagingList.Create(lanches, 5, pageindex);
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
-                lanches = _repository.ObterLanches().Where(c => c.Categoria.Nome.Equals(categoria));
-                categoriaAtual = categoria;
-            }
-
-            var lanchesListViewModel = new LancheListaViewModels
-            {
-                Lanches = lanches,
-                CategoriaAtual = categoriaAtual
-            };
-
-            return View(lanchesListViewModel);
+            return View(model);
         }
 
         public IActionResult Create()
@@ -50,7 +39,7 @@ namespace Lanches_Mac.Controllers
             var lanche = _repository.ObterLanchePorId(id);
             return View(lanche);
         }
-       
+
         public IActionResult Search(string busca)
         {
             IEnumerable<Lanche> lanches;
@@ -75,7 +64,7 @@ namespace Lanches_Mac.Controllers
                 else
                 {
                     categoriaAtual = "Nenhum Lanche foi encontrado";
-                }             
+                }
 
             }
 

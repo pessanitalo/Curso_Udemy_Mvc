@@ -1,7 +1,9 @@
+using FastReport.Data;
 using Lanches_Mac.Context;
 using Lanches_Mac.Interface;
 using Lanches_Mac.Models;
 using Lanches_Mac.Repository;
+using Lanches_Mac.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
@@ -20,6 +22,11 @@ namespace Lanches_Mac
             builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            FastReport.Utils.RegisteredObjects.AddConnection(typeof(MsSqlDataConnection));
+
+            builder.Services.Configure<ConfigurationsImagens>(builder.Configuration
+                               .GetSection("ConfigurationsPastaImagens"));
+
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                             .AddEntityFrameworkStores<DataContext>()
                             .AddDefaultTokenProviders();
@@ -27,11 +34,14 @@ namespace Lanches_Mac
             builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
             builder.Services.AddScoped<ILancheRepository, LancheRepository>();
             builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+            builder.Services.AddScoped<GraficosVendasService>();
+            builder.Services.AddScoped<RelatorioLanchesService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
             //builder.Services.AddScoped(CarrinhoCompra.GetCarrinho);
 
             builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddFastReport();
             builder.Services.AddSession();
 
             builder.Services.AddPaging(opt =>
@@ -53,7 +63,8 @@ namespace Lanches_Mac
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRouting();
+            app.UseFastReport();
+            app.UseFastReport();
             app.UseSession();
 
             app.UseAuthorization();

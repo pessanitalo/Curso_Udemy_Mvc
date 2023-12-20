@@ -5,22 +5,28 @@
 }
 <h3>Lanches</h3>
 
-@* <form method="get" class="form-inline">
+<form method="get" class="form-inline">
 
     <input name="filter" class="form-control" placeholder="filtro"
            value="@Model.RouteValue["Filter"]" />
 
     <button type="submit" class="btn btn-info"> Procurar</button>
-</form> *@
+</form>
 
 Total de Lanches : @Model.TotalRecordCount
 <nav aria-label="Products navigation example">
     <vc:pager paging-list="@Model"></vc:pager>
 </nav>
 
-<p>
-    <a asp-action="Create">Criar Lanche</a>
-</p>
+<div class="row">
+    <div class="col-md-12">
+        <a asp-action="Create">Criar Lanche</a> |
+        <a asp-controller="LanchesReport" asp-action="LanchesCategoriaReport">Gerar Relatorio</a> |
+        <a asp-controller="LanchesReport" asp-action="LanchesCategoriaPdf">Baixar PDF</a> 
+    </div>
+</div>
+    
+
 <div class="row">
     <div class="col-md-10">
         <table class="table">
@@ -45,7 +51,7 @@ Total de Lanches : @Model.TotalRecordCount
                         @Html.DisplayNameFor(model => model.Categoria)
                     </th>
                     <th></th>
-                </tr
+</tr
             </thead>
             <tbody>
                 @foreach (var item in Model)
@@ -70,9 +76,7 @@ Total de Lanches : @Model.TotalRecordCount
                             @Html.DisplayFor(modelItem => item.Categoria.Nome)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edita</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Deleta</a>
+                         <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a>
                         </td>
                     </tr>
                 }

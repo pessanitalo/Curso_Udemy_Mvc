@@ -1,7 +1,10 @@
-﻿using Lanches_Mac.Interface;
+﻿using Lanches_Mac.Context;
+using Lanches_Mac.Interface;
 using Lanches_Mac.Models;
+using Lanches_Mac.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lanches_Mac.Controllers
 {
@@ -9,19 +12,27 @@ namespace Lanches_Mac.Controllers
     {
         private readonly IPedidoRepository _pedidoRepository;
         private readonly CarrinhoCompra _carrinhoCompra;
+        private readonly DataContext _context;
 
-        public PedidoController(IPedidoRepository pedidoRepository, CarrinhoCompra carrinhoCompra)
+        public PedidoController(IPedidoRepository pedidoRepository, CarrinhoCompra carrinhoCompra, DataContext context)
         {
             _pedidoRepository = pedidoRepository;
             _carrinhoCompra = carrinhoCompra;
+            _context = context;
         }
 
-        [Authorize]
+        public IActionResult Index()
+        {
+            var pedidos = _context.Pedidos.ToList();
+            return View(pedidos);
+        }
+
         public IActionResult Checkout()
         {
             return View();
         }
-        [Authorize]
+
+
         [HttpPost]
         public IActionResult Checkout(Pedido pedido)
         {
@@ -60,6 +71,26 @@ namespace Lanches_Mac.Controllers
 
             return View(pedido);
 
+        }
+
+        public IActionResult PedidoLanches(int? id)
+        {
+            var pedido = _context.Pedidos.Include(c => c.PedidoItens)
+                .ThenInclude(c => c.Lanche).FirstOrDefault(c => c.Id == id);
+
+            if (pedido == null)
+            {
+                Response.StatusCode = 404;
+                return View("PedidoNotFoud", id.Value);
+            }
+
+            PedidoLancheViewModel pedidoLanches = new PedidoLancheViewModel()
+            {
+                Pedido = pedido,
+                PedidosDetalhes = pedido.PedidoItens
+            };
+
+            return View(pedidoLanches);
         }
     }
 }

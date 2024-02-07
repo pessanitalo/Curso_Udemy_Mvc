@@ -17,13 +17,20 @@ namespace Lanches_Mac.Controllers
         }
 
 
-        public IActionResult Index(string filter, int pageindex = 1)
+        public IActionResult Index(string filter, int pageindex = 1, string sort = "Nome")
         {
 
             IEnumerable<Lanche> lanches;
 
             lanches = _repository.ObterLanches();
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                lanches = lanches.Where(p => p.Nome.Contains(filter));
+            }
+
             var model = PagingList.Create(lanches, 5, pageindex);
+
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
             return View(model);

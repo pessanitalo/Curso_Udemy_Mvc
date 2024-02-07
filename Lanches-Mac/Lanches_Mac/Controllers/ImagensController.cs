@@ -47,7 +47,7 @@ namespace Lanches_Mac.Controllers
                 foreach (var formFile in files)
                 {
                     if (formFile.FileName.Contains(".jpg") || formFile.FileName.Contains(".gif") ||
-                               formFile.FileName.Contains(".png"))
+                             formFile.FileName.Contains(".png"))
                     {
                         var fileNameWithPath = string.Concat(filePath, "\\", formFile.FileName);
 
@@ -72,6 +72,26 @@ namespace Lanches_Mac.Controllers
             }
 
 
+        }
+
+        public IActionResult GetImagens()
+        {
+            FileManagerModel model = new FileManagerModel();
+
+            var userImagesPath = Path.Combine(_hostEnvironment.WebRootPath,
+                    _config.NomePastaImagensProdutos);
+
+            DirectoryInfo dir = new DirectoryInfo(userImagesPath);
+
+            FileInfo[] files = dir.GetFiles();
+
+            if (files.Length == 0)
+            {
+                ViewData["Erro"] = $"Nenhum arquivo encontrado na pasta {userImagesPath}";
+            }
+
+            model.Files = files;
+            return View(model);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Lanches_Mac
             builder.Services.AddScoped<ILancheRepository, LancheRepository>();
             builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
             builder.Services.AddScoped<GraficosVendasService>();
-            builder.Services.AddScoped<RelatorioLanchesService>();
+            //builder.Services.AddScoped<RelatorioLanchesService>();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped(sp => CarrinhoCompra.GetCarrinho(sp));
             //builder.Services.AddScoped(CarrinhoCompra.GetCarrinho);
